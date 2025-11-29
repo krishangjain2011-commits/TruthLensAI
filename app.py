@@ -259,7 +259,7 @@ elif st.session_state.current_page == "Analyze Headline":
             st.markdown("### Feedback")
             feedback = st.text_area("Your thoughts:")
             if st.button("Submit Feedback"):
-                st.success("Thanks for your feedback! ❤️")
+                st.success("Thanks for your feedback! ")
             st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('</div>', unsafe_allow_html=True)
@@ -275,3 +275,34 @@ elif st.session_state.current_page == "History & Insights":
             st.markdown("---")
     else:
         st.info("No headlines analyzed yet!")
+
+
+# ---------- LIVE PLATFORM FREQUENCY GRAPH ----------
+import matplotlib.pyplot as plt
+
+st.subheader("📈 Fake News Frequency Based on User Selections")
+
+# Initialize counter dictionary
+platform_counts = {"Instagram": 0, "YouTube": 0, "Facebook": 0, "Twitter": 0}
+timeline = []          # event number: 1,2,3...
+counts_over_time = []  # total fake news count so far
+
+# Count occurrences from session_state.history
+total_count = 0
+for entry in st.session_state.history:
+    platform_counts[entry["platform"]] += 1
+    total_count += 1
+    timeline.append(total_count)
+    counts_over_time.append(platform_counts[entry["platform"]])
+
+# Plot only if history exists
+if timeline:
+    fig, ax = plt.subplots()
+    ax.plot(timeline, counts_over_time, marker="o")
+    ax.set_xlabel("Event Number")
+    ax.set_ylabel("Count for Selected Platform")
+    ax.set_title("Increase in Fake News Reports (Based on User Input)")
+
+    st.pyplot(fig)
+else:
+    st.info("No data yet. Analyze some headlines first!")
